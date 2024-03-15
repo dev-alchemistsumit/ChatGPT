@@ -1,7 +1,17 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      Everything is starting for far well chatId-Page
+      Chat Page
+      <div>
+        <Link href="/api/auth/logout">Logout</Link>
+      </div>
+      <>
+        <div></div>
+
+        <div></div>
+      </>
     </main>
   );
 }

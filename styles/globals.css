@@ -34,6 +34,7 @@ body {
 
 @layer components {
 .btn{
-  @apply rounded-md bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-500
+  @apply rounded-md bg-emerald-600 px-4 py-2
+   text-white hover:bg-emerald-500 disabled:bg-emerald-500
 }
 }

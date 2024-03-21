@@ -2,17 +2,44 @@ import Head from "next/head";
 import { ChatSidebar } from "components/ChatSidebar";
 import { useState } from "react";
 import { streamReader } from "openai-edge-stream";
+import { v4 as uuid } from "uuid";
+import { Message } from "../../components/Message/Message";
 
 export default function Chatpage() {
   const [incomingMessage, setIncomingMessage] = useState("");
   const [messageText, setMessgaeText] = useState("");
-  const [newChatMessages, setNewChatMessages] = useState("");
+  const [newChatMessages, setNewChatMessages] = useState([]);
+  const [generatingResponse, setGeneratingResponse] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setGeneratingResponse(true);
+    setNewChatMessages((prev) => {
+      const newChatMessages = [
+        ...prev,
+        {
+          _id: uuid(),
+          role: "user",
+          content: messageText,
+        },
+      ];
+      return newChatMessages;
+    });
 
-    console.log("Message:" + messageText);
-    const response = await fetch("/api/chat/sendMessage", {
+    setMessgaeText("");
+
+    console.log("Code running in [[...chat]]");
+    const response = await fetch(`/api/chat/createNewChat`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ message: messageText }),
+    });
+
+    const json = await response.json();
+    console.log("NEW CHAT:", json);
+    /*    const response = await fetch("/api/chat/sendMessage", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -30,6 +57,8 @@ export default function Chatpage() {
       console.log("Message :" + message.event);
       setIncomingMessage((s) => `${s}${message.content}`);
     });
+*/
+    setGeneratingResponse(false);
   };
 
   return (
@@ -39,21 +68,32 @@ export default function Chatpage() {
         <title>New Chat</title>
       </Head>
       <div className="  grid h-screen grid-cols-[260px_1fr]">
-        <div className="bg-white text-black">
+        <div className="bg-gray-900 text-black">
           <div>
             <ChatSidebar />
           </div>
         </div>
-        <div className="bg flex flex-col bg-gray-700 ">
-          <div className="flex-1 text-white">{incomingMessage}</div>
+        <div className="bg flex flex-col overflow-hidden bg-gray-700 ">
+          <div className="flex-1 overflow-auto text-white">
+            {newChatMessages.map((message) => (
+              <Message
+                key={message._id}
+                role={message.role}
+                content={message.content}
+              />
+            ))}
+            {!!incomingMessage && (
+              <Message role="assistant" content={incomingMessage} />
+            )}
+          </div>
           <div className="bg-gray-800 p-10 text-start">
             <form onSubmit={handleSubmit}>
-              <fieldset className="flex gap-2">
+              <fieldset className="flex gap-2" disabled={generatingResponse}>
                 <textarea
                   value={messageText}
                   onChange={(e) => setMessgaeText(e.target.value)}
                   className="w-full resize-none rounded-md bg-gray-700 p-2  text-white  focus:border-emerald-500  focus:outline focus:outline-emerald-500"
-                  placeholder="Send a messgae..."
+                  placeholder={generatingResponse ? "" : "Send a message..."}
                 />
                 <button type="submit" className="btn">
                   Send

@@ -16,6 +16,7 @@ export default async function handler(req) {
     };
 
     let newChatId;
+    let chatMessages = [];
     //check if chat exist if Y continue with same one
 
     if (chatId) {
@@ -35,6 +36,8 @@ export default async function handler(req) {
           }),
         }
       );
+      const json = await response.json();
+      chatMessages = json.chat.messages || [];
     } else {
       // or else creating new chat
       const response = await fetch(
@@ -50,9 +53,31 @@ export default async function handler(req) {
       );
 
       const json = await response.json();
-      console.log(" NEW CHAT:", json, " from sendMessage.js/53");
+      chatId = json._id;
       newChatId = json._id;
+      chatMessages = json.messages || [];
     }
+
+    //this code helps to secure the context questions(previous)
+    //and the limit the chatgpt set us for that
+    //is 4096 tokens i.e 16k chars
+    // but it is ideal for setting it up for 2k
+
+    const messagesToInclude = [];
+    chatMessages.reverse();
+    let usedTokens = 0;
+    for (let chatMessage of chatMessages) {
+      const messageTokens = chatMessage.content.length / 4;
+      usedTokens += messageTokens;
+      if (usedTokens <= 2000) {
+        messagesToInclude.push(chatMessage);
+      } else {
+        break;
+      }
+    }
+
+    //cause OpenAi expects messages from old to latest
+    messagesToInclude.reverse();
 
     //connecting with OpenAI API for Chat
     const stream = await OpenAIEdgeStream(
@@ -65,7 +90,7 @@ export default async function handler(req) {
         method: "POST",
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
-          messages: [initialChatMessage, { content: message, role: "user" }],
+          messages: [initialChatMessage, ...messagesToInclude],
           stream: true,
         }),
       },

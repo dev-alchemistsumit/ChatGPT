@@ -81,7 +81,7 @@ export default function Chatpage({ chatId, title, messages = [] }) {
     const reader = data.getReader();
     let content = "";
     await streamReader(reader, (message) => {
-      console.log("Message :" + message.event);
+      console.log("Message :" + message.event + ":[[...chatId]].js/84");
       if (message.event === "newChatId") {
         setNewChatId(message.content);
       } else {

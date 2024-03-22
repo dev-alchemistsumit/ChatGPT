@@ -1,15 +1,25 @@
 import Head from "next/head";
 import { ChatSidebar } from "components/ChatSidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { streamReader } from "openai-edge-stream";
 import { v4 as uuid } from "uuid";
 import { Message } from "../../components/Message/Message";
+import { useRouter } from "next/router";
 
 export default function Chatpage() {
+  const [newChatId, setNewChatId] = useState(null);
   const [incomingMessage, setIncomingMessage] = useState("");
   const [messageText, setMessgaeText] = useState("");
   const [newChatMessages, setNewChatMessages] = useState([]);
   const [generatingResponse, setGeneratingResponse] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!generatingResponse && newChatId) {
+      setNewChatId(null);
+      router.push(`/chat/${newChatId}`);
+    }
+  }, [newChatId, generatingResponse, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,26 +37,13 @@ export default function Chatpage() {
     });
 
     setMessgaeText("");
-
-    console.log("Code running in [[...chat]]");
-    const response = await fetch(`/api/chat/createNewChat`, {
+    const response = await fetch("/api/chat/sendMessage", {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify({ message: messageText }),
     });
-
-    const json = await response.json();
-    console.log("NEW CHAT:", json);
-    /*    const response = await fetch("/api/chat/sendMessage", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ message: messageText }),
-    });
-
     const data = response.body;
     if (!data) {
       console.log("Message:" + "No body found");
@@ -55,9 +52,12 @@ export default function Chatpage() {
     const reader = data.getReader();
     await streamReader(reader, (message) => {
       console.log("Message :" + message.event);
-      setIncomingMessage((s) => `${s}${message.content}`);
+      if (message.event === "newChatId") {
+        setNewChatId(message.content);
+      } else {
+        setIncomingMessage((s) => `${s}${message.content}`);
+      }
     });
-*/
     setGeneratingResponse(false);
   };
 
@@ -69,9 +69,7 @@ export default function Chatpage() {
       </Head>
       <div className="  grid h-screen grid-cols-[260px_1fr]">
         <div className="bg-gray-900 text-black">
-          <div>
-            <ChatSidebar />
-          </div>
+          <ChatSidebar />
         </div>
         <div className="bg flex flex-col overflow-hidden bg-gray-700 ">
           <div className="flex-1 overflow-auto text-white">

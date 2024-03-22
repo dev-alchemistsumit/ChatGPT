@@ -6,30 +6,53 @@ export const config = {
 
 export default async function handler(req) {
   try {
-    const { message } = await req.json();
+    const { chatId: chatIdFromParam, message } = await req.json();
+    let chatId = chatIdFromParam;
 
     const initialChatMessage = {
       role: "system",
       content:
-        "you name is ChatGPT an incereadibly intelligent quick thinking AI who always reply with enthusiatic positive energy. This OpenAI ChatGPT(a language model)is created by Sumit Suryawanashi. and your response must be formattted as Markdown.",
+        "you name is ChatGPT an increadibly intelligent quick thinking AI who always reply with enthusiatic positive energy. This OpenAI ChatGPT(a language model)is created by Sumit Suryawanashi. and your response must be formattted as Markdown.",
     };
 
-    //creating new chat
-    const response = await fetch(
-      `${req.headers.get("origin")}/api/chat/createNewChat`,
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          cookie: req.headers.get("cookie"),
-        },
-        body: JSON.stringify({ message }),
-      }
-    );
+    let newChatId;
+    //check if chat exist if Y continue with same one
 
-    const json = await response.json();
-    console.log("sendMessage.js : NEW CHAT:", json);
-    const chatId = json._id;
+    if (chatId) {
+      //adding msg to already existing chat
+      const response = await fetch(
+        `${req.headers.get("origin")}/api/chat/addMessageToChat`,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            cookie: req.headers.get("cookie"),
+          },
+          body: JSON.stringify({
+            chatId,
+            role: "user",
+            content: message,
+          }),
+        }
+      );
+    } else {
+      // or else creating new chat
+      const response = await fetch(
+        `${req.headers.get("origin")}/api/chat/createNewChat`,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            cookie: req.headers.get("cookie"),
+          },
+          body: JSON.stringify({ message }),
+        }
+      );
+
+      const json = await response.json();
+      console.log(" NEW CHAT:", json, " from sendMessage.js/53");
+      newChatId = json._id;
+    }
 
     //connecting with OpenAI API for Chat
     const stream = await OpenAIEdgeStream(
@@ -50,7 +73,9 @@ export default async function handler(req) {
       {
         //for showing and navigating the ChatId
         onBeforeStream: ({ emit }) => {
-          emit(chatId, "newChatId");
+          if (newChatId) {
+            emit(newChatId, "newChatId");
+          }
         },
         //saving data to MongoDB by hitting a endpoint
         onAfterStream: async ({ fullContent }) => {

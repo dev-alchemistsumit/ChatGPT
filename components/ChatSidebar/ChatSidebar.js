@@ -7,7 +7,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export const ChatSidebar = () => {
+export const ChatSidebar = ({ chatId }) => {
   const [chatList, setChatList] = useState([]);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export const ChatSidebar = () => {
     };
 
     loadChatList();
-  }, []);
+  }, [chatId]);
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-gray-900 text-white">
@@ -37,10 +37,17 @@ export const ChatSidebar = () => {
           <Link
             key={chat._id}
             href={`/chat/${chat._id}`}
-            className="side-menu-item "
+            className={`side-menu-item  ${
+              chatId === chat._id ? " bg-gray-700 hover:bg-gray-700" : ""
+            }`}
           >
             <FontAwesomeIcon icon={faMessage} />
-            {chat.title}
+            <span
+              title={chat.title}
+              className="overflow-hidden text-ellipsis whitespace-nowrap"
+            >
+              {chat.title}
+            </span>
           </Link>
         ))}
       </div>

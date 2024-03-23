@@ -134,7 +134,8 @@ export default function Chatpage({ chatId, title, messages = [] }) {
                   className="w-full resize-none rounded-md bg-gray-700 p-2  text-white  focus:border-emerald-500  focus:outline focus:outline-emerald-500"
                   placeholder={generatingResponse ? "" : "Message ChatGPT..."}
                 />
-                <button type="submit" className="btn  p-4">
+                <button type="submit" className="btn bg-emerald-700 p-4">
+                  {/* Send */}
                   <FontAwesomeIcon icon={faArrowTurnUp} className=" p-2" />
                 </button>
               </fieldset>

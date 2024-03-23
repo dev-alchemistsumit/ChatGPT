@@ -9,6 +9,7 @@ export default async function handler(req) {
     const { chatId: chatIdFromParam, message } = await req.json();
     let chatId = chatIdFromParam;
 
+    //an initial prompt you set before conversation with ChatGPT
     const initialChatMessage = {
       role: "system",
       content:

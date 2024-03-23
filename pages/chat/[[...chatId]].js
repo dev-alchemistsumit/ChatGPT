@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowUpFromBracket,
+  faArrowTurnUp,
+} from "@fortawesome/free-solid-svg-icons";
 import Head from "next/head";
 import { ChatSidebar } from "components/ChatSidebar";
 import { useEffect, useState } from "react";
@@ -127,10 +132,10 @@ export default function Chatpage({ chatId, title, messages = [] }) {
                   value={messageText}
                   onChange={(e) => setMessgaeText(e.target.value)}
                   className="w-full resize-none rounded-md bg-gray-700 p-2  text-white  focus:border-emerald-500  focus:outline focus:outline-emerald-500"
-                  placeholder={generatingResponse ? "" : "Send a message..."}
+                  placeholder={generatingResponse ? "" : "Message ChatGPT..."}
                 />
-                <button type="submit" className="btn">
-                  Send
+                <button type="submit" className="btn  p-4">
+                  <FontAwesomeIcon icon={faArrowTurnUp} className=" p-2" />
                 </button>
               </fieldset>
             </form>

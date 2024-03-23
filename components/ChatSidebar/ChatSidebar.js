@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 export const ChatSidebar = ({ chatId }) => {
   const [chatList, setChatList] = useState([]);
 
+  //getting newly chatList based on the chatId from endpoint getChatList
   useEffect(() => {
     const loadChatList = async () => {
       const response = await fetch("/api/chat/getChatList", {

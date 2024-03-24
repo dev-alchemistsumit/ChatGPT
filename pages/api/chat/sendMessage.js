@@ -13,13 +13,14 @@ export default async function handler(req) {
     const initialChatMessage = {
       role: "system",
       content:
-        "you name is ChatGPT an increadibly intelligent quick thinking AI who always reply with enthusiatic positive energy. This OpenAI ChatGPT(a language model)is created by Sumit Suryawanashi. and your response must be formattted as Markdown.",
+        "you name is ChatGPT an increadibly intelligent quick thinking AI who responses quickly and the response are formattted in Markdown.",
+      // who always reply with enthusiatic positive energy. This OpenAI ChatGPT(a language model)is created by Sumit Suryawanashi. and
     };
 
     let newChatId;
     let chatMessages = [];
-    //check if chat exist if Y continue with same one
 
+    //check if chat exist if Y continue with same one
     if (chatId) {
       //adding msg to already existing chat
       const response = await fetch(
@@ -63,7 +64,6 @@ export default async function handler(req) {
     //and the limit the chatgpt set us for that
     //is 4096 tokens i.e 16k chars
     // but it is ideal for setting it up for 2k
-
     const messagesToInclude = [];
     chatMessages.reverse();
     let usedTokens = 0;
@@ -124,7 +124,7 @@ export default async function handler(req) {
       }
     );
 
-    //            "sendMessage.js : Msg streamed from the OpenAI the full reply" +
+    // SendMessage.js : Msg streamed from the OpenAI(the full reply)
 
     return new Response(stream);
   } catch (e) {

@@ -14,8 +14,8 @@ import { getSession } from "@auth0/nextjs-auth0";
 import clientPromise from "lib/mongodb";
 import { ObjectId } from "mongodb";
 
+//when Chats load this func is invoked automatically
 export default function Chatpage({ chatId, title, messages = [] }) {
-  console.log("props:", title, messages);
   const [newChatId, setNewChatId] = useState(null);
   const [incomingMessage, setIncomingMessage] = useState("");
   const [messageText, setMessgaeText] = useState("");
@@ -54,6 +54,7 @@ export default function Chatpage({ chatId, title, messages = [] }) {
     }
   }, [newChatId, generatingResponse, router]);
 
+  //
   const handleSubmit = async (e) => {
     e.preventDefault();
     setGeneratingResponse(true);

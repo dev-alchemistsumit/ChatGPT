@@ -8,7 +8,7 @@ export const Message = ({ role, content }) => {
   console.log("USER", user);
   return (
     <div
-      className={`grid grid-cols-[30px_1fr] gap-5 p-5 ${
+      className={`grid grid-cols-[30px_1fr] gap-5 rounded-sm border-white p-5 ${
         role === "assistant" ? "bg-gray-600" : ""
       }`}
     >
@@ -23,8 +23,11 @@ export const Message = ({ role, content }) => {
           />
         )}
         {role === "assistant" && (
-          <div className="flex h-[30px] w-[30px] items-center justify-center rounded-sm bg-gray-800 shadow-md shadow-black/50">
-            <FontAwesomeIcon icon={faRobot} className="p-1 text-emerald-400 " />
+          <div
+            className="flex h-[30px] w-[30px] items-center justify-center rounded-sm bg-black shadow-md
+          shadow-black"
+          >
+            <FontAwesomeIcon icon={faRobot} className=" p-1 text-emerald-400" />
           </div>
         )}
       </div>

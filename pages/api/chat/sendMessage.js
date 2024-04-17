@@ -91,6 +91,7 @@ export default async function handler(req) {
         method: "POST",
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
+          //engine and combining intial context and coming contextn
           messages: [initialChatMessage, ...messagesToInclude],
           stream: true,
         }),

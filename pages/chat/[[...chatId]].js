@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowTurnUp } from "@fortawesome/free-solid-svg-icons";
 import Head from "next/head";
-import { ChatSidebar } from "components/ChatSidebar";
+import { ChatSidebar } from "components/ChatSidebarFolder";
 import { useEffect, useState } from "react";
 import { streamReader } from "openai-edge-stream";
 import { v4 as uuid } from "uuid";
-import { Message } from "../../components/Message/Message";
+import { Message } from "../../components/MessageFolder/Message";
 import { useRouter } from "next/router";
 import { getSession } from "@auth0/nextjs-auth0";
 import clientPromise from "lib/mongodb";

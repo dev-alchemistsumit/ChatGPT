@@ -3,6 +3,7 @@ import Image from "next/image";
 import { faRobot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+
 export const Message = ({ role, content }) => {
   const { user } = useUser();
   console.log("USER", user);
@@ -19,7 +20,7 @@ export const Message = ({ role, content }) => {
             width={30}
             height={30}
             alt="User Avatar"
-            className="rounded-sm shadow-md shadow-black/50 "
+            className="rounded-sm shadow-md shadow-black/50"
           />
         )}
         {role === "assistant" && (
